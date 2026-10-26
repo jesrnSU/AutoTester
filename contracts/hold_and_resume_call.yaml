@@ -1,0 +1,7 @@
+contract: hold_and_resume_call
+description: Place the active call on hold, then resume it.
+implementations: {}
+postcondition:
+  description: Phone1 is in an active call that is not on hold.
+precondition:
+  state: active_call_screen

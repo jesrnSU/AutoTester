@@ -1,0 +1,10 @@
+contract: end_active_call
+description: 'Hang up the currently active call.
+
+  '
+implementations: {}
+parameters: []
+postcondition:
+  state: home_screen
+precondition:
+  state: active_call_screen

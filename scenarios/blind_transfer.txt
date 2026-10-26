@@ -1,0 +1,18 @@
+[state home]
+Phone1 shows the home screen. Contact names, date and time are expected on this screen.
+
+[contract call_line 'Example Contact A' Phone3]
+
+[contract answer_call]
+
+[state active_call]
+Phone1 shows an active ongoing call screen with 'Example Contact A'.
+
+[contract blind_transfer 'Example Contact B']
+
+[contract answer_call Phone2]
+
+[contract end_active_call Phone2]
+
+[state home]
+Phone1 shows the home screen. Contact names, date and time are expected on this screen.

@@ -1,0 +1,12 @@
+contract: blind_transfer
+description: Blind Transfer the active call to {contact} without announcing it, by
+  selecting the contact from the visible line keys.
+implementations: {}
+parameters:
+- contact
+postcondition:
+  description: Phone1 is back at the idle home screen. Contact names and the time/date
+    are visible. No transfer menu, call menu, or active/held call indicator is present.
+  state: home_screen
+precondition:
+  state: active_call_screen

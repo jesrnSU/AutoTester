@@ -1,0 +1,11 @@
+contract: add_conference_user
+description: Create a conference with a conference softkey and add {contact} via lines.
+implementations: {}
+parameters:
+- contact
+postcondition:
+  description: Phone1 is placing an outgoing call to {contact} to add them to the
+    conference. The contact name is visible as the active call destination.
+  state: conference_outgoing_call
+precondition:
+  state: active_call_screen

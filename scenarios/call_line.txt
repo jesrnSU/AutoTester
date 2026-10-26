@@ -1,0 +1,9 @@
+[precondition home]
+Phone1 shows the home screen. Contact names, date and time are expected on this screen.
+
+[action x]
+Phone1 calls Phone2 using LINEKEYx.
+
+[state calling y]
+Phone1 shows an outgoing/calling screen directed at y.
+

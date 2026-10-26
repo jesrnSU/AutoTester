@@ -1,0 +1,25 @@
+# Private device configuration and generated research data
+auto_tester/devices/saved_configs/
+auto_tester/devices/saved_configs_backup/
+artifacts/
+models/
+
+# Credentials and local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.claude/
+.codex/
+.agents/
+.aws/
+.vscode/
+
+# Generated Python and OS files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.DS_Store

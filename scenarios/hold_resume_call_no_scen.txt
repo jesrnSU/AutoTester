@@ -1,0 +1,32 @@
+[state home]
+Phone1 shows the idle/home screen. Contact names, date and time are expected on this screen.
+
+[action]
+Phone1 calls 'Example Contact B' using their line key.
+
+[state calling]
+Phone1 shows an outgoing/calling screen directed at 'Example Contact B'.
+
+[action]
+Phone2 answers the incoming call.
+
+[state active_call]
+Phone1 shows an active ongoing call screen with 'Example Contact B'.
+
+[action]
+Phone1 presses Hold.
+
+[state held]
+Phone1 indicate that the call is on hold. A text label 'Resume' should be visible. 
+
+[action]
+Phone1 presses Resume.
+
+[state active_call]
+Phone1 show an active ongoing call screen with 'Example Contact B'. 
+
+[action]
+Phone1 ends the call. 
+
+[state home]
+Phone1 shows the idle/home screen. Contact names, date and time are expected on this screen.

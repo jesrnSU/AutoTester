@@ -1,0 +1,14 @@
+contract: call_line
+description: 'Initiate an outgoing call to a contact by pressing their assigned line
+  key.
+
+  '
+implementations: {}
+parameters:
+- contact
+postcondition:
+  description: Phone1 is placing an outgoing call to {contact}. The contact name is
+    visible on screen as the active call destination.
+  state: calling_screen
+precondition:
+  state: home_screen

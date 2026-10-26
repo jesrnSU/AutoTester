@@ -1,0 +1,9 @@
+[precondition active_call x]
+Phone1 shows an active ongoing call screen with x.
+
+[action x]
+Phone1 calls Phone2 using LINEKEYx.
+
+[state calling y]
+Phone1 shows an outgoing/calling screen directed at y.
+

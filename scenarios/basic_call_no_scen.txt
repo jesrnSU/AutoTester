@@ -1,0 +1,20 @@
+[state home]
+Phone1 shows the idle/home screen. Contact names, date and time are expected on this screen.
+
+[action]
+Phone1 calls 'Example Contact A' using their line key.
+
+[state active_call]
+Phone1 shows an active ongoing call screen with the remote party.
+
+[action]
+Phone2 answers the incoming call.
+
+[state active_call]
+Phone1 shows an active ongoing call screen with the remote party.
+
+[action]
+Phone1 ends the active call.
+
+[state home]
+Phone1 shows the idle/home screen. Contact names, date and time are expected on this screen.

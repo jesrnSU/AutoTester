@@ -1,0 +1,10 @@
+contract: answer_call
+description: 'Accept the incoming ringing call.
+
+  '
+implementations: {}
+parameters: []
+postcondition:
+  state: active_call_screen
+precondition:
+  state: incoming_call_screen
