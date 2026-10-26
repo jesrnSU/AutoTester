@@ -4,13 +4,11 @@ from io import BytesIO
 from pathlib import Path
 from typing import Optional
 
-import urllib3
 from PIL import Image
 
 from auto_tester.devices.base import BaseDevice, DeviceCapabilities
 from auto_tester.net.http import HttpClient
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 LATEST_SCREENSHOT_NAME = "latest_screen.png"
 
@@ -68,8 +66,7 @@ class YealinkDevice(BaseDevice):
     def capture_screen(
         self, output_dir: str = "artifacts/live", filename: Optional[str] = None
     ) -> Path:
-        base_url = f"https://{self._username}:{self._password}@{self._ip}"
-        response = self.http_client.get(f"{base_url}/screencapture", timeout=10)
+        response = self.http_client.get("/screencapture", timeout=10)
         if not response.content:
             raise RuntimeError("screencapture returned an empty payload")
         out_dir = Path(output_dir)
@@ -88,16 +85,15 @@ class YealinkDevice(BaseDevice):
             raise ValueError(
                 f"Invalid action: {action!r}. Must be one of: {list(self.SUPPORTED_ACTIONS)}"
             )
-        base_url = f"https://{self._username}:{self._password}@{self._ip}"
         if action == "KEYPRESS":
             api_key = self.SUPPORTED_KEYS.get(args[0])
             if api_key is None:
                 raise ValueError(
                     f"Invalid key: {args[0]!r}. Must be one of: {list(self.SUPPORTED_KEYS)}"
                 )
-            self.http_client.get(f"{base_url}{self.SUPPORTED_ACTIONS[action]}{api_key}")
+            self.http_client.get(f"{self.SUPPORTED_ACTIONS[action]}{api_key}")
         else:
-            self.http_client.get(f"{base_url}{self.SUPPORTED_ACTIONS[action]}")
+            self.http_client.get(self.SUPPORTED_ACTIONS[action])
         self.capture_screen()
 
     def get_screen_capture(self) -> Path | None:

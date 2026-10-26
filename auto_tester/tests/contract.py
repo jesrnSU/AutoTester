@@ -22,6 +22,7 @@ import re
 from pathlib import Path
 
 import yaml
+from auto_tester.safe_paths import named_path
 
 CONTRACTS_DIR = Path("contracts")
 
@@ -31,7 +32,7 @@ CONTRACTS_DIR = Path("contracts")
 
 def load(name: str) -> dict:
     """Load contract definition from contracts/{name}.yaml."""
-    path = CONTRACTS_DIR / f"{name}.yaml"
+    path = named_path(CONTRACTS_DIR, name, ".yaml")
     if not path.exists():
         raise FileNotFoundError(f"No contract definition for '{name}' at {path}")
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
@@ -122,7 +123,7 @@ def save_impl(
     stub is created.
     """
     CONTRACTS_DIR.mkdir(parents=True, exist_ok=True)
-    path = CONTRACTS_DIR / f"{name}.yaml"
+    path = named_path(CONTRACTS_DIR, name, ".yaml")
 
     if path.exists():
         defn = yaml.safe_load(path.read_text(encoding="utf-8")) or {}

@@ -18,7 +18,23 @@ import threading
 import anthropic
 from auto_tester.devices.device_configs import config_context, save_config
 
-_client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+_client = None
+
+
+def _get_client():
+    """Require explicit consent before exporting phone data from this archive."""
+    if os.environ.get("AUTOTESTER_ENABLE_EXTERNAL_AI") != "1":
+        raise RuntimeError(
+            "External AI calls are disabled for this showcase archive. "
+            "Enabling AUTOTESTER_ENABLE_EXTERNAL_AI=1 sends screenshots and OCR "
+            "text to Anthropic; use synthetic data only."
+        )
+    global _client
+    if _client is None:
+        _client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    return _client
+
+
 _MODEL = "claude-haiku-4-5-20251001"
 
 # ---------------------------------------------------------------------------
@@ -251,7 +267,7 @@ def _screen_blocks(
 
 def _call(system: str, content: list[dict], max_tokens: int, temperature: float) -> str:
     _log_request(system, content)
-    response = _client.messages.create(
+    response = _get_client().messages.create(
         model=_MODEL,
         system=system,
         max_tokens=max_tokens,
@@ -331,15 +347,8 @@ def _extract_reasoning_key(reasoning: str, valid_keys: list[str]) -> str | None:
 
 
 def _log_request(system: str, content: list[dict]) -> None:
-    """Print the full text content sent to Claude."""
-    print("\n[Claude prompt] system:")
-    print(system)
-    for block in content:
-        if block.get("type") == "text":
-            print("[Claude prompt] user text:")
-            print(block["text"])
-        elif block.get("type") == "image":
-            print("[Claude prompt] <image attached>")
+    """Log request metadata without exposing phone text or images."""
+    print(f"[Claude request] {len(content)} content blocks (contents omitted)")
 
 
 def _tool_call(
@@ -347,7 +356,7 @@ def _tool_call(
 ) -> dict:
     """Call Claude with tool_choice=any, return the first tool_use input dict."""
     _log_request(system, content)
-    response = _client.messages.create(
+    response = _get_client().messages.create(
         model=_MODEL,
         system=system,
         tools=tools,

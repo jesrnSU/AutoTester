@@ -98,7 +98,7 @@ class LauncherWindow(QWidget):
             if auth_type == "digest"
             else HTTPBasicAuth(cfg["username"], cfg["password"])
         )
-        http = HttpClient(base_url=f"https://{cfg['ip']}", verify=False, auth=auth)
+        http = HttpClient(base_url=f"https://{cfg['ip']}", auth=auth)
         cls = PolycomDevice if cfg["vendor"] == "Polycom" else YealinkDevice
         device = cls(
             device_id=cfg["device_id"],

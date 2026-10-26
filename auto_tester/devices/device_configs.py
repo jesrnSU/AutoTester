@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
@@ -11,8 +12,20 @@ from auto_tester.devices.base import BaseDevice
 from auto_tester.devices.polycom import PolycomDevice
 from auto_tester.devices.yealink import YealinkDevice
 from auto_tester.net.http import HttpClient
+from auto_tester.safe_paths import named_path
 
 SAVED_DEVICES_DIR = Path("auto_tester/devices/saved_configs")
+
+
+def _write_config(config: dict) -> None:
+    path = named_path(SAVED_DEVICES_DIR, config["device_id"], ".json")
+    SAVED_DEVICES_DIR.mkdir(parents=True, exist_ok=True, mode=0o700)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW
+    fd = os.open(path, flags, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as stream:
+        os.fchmod(stream.fileno(), 0o600)
+        stream.truncate(0)
+        json.dump(config, stream, indent=2)
 
 
 def _make_auth(auth_type: str, username: str, password: str):
@@ -33,7 +46,6 @@ def save_device(
     softkeys: int = 0,
     touchscreen: bool = False,
 ) -> None:
-    SAVED_DEVICES_DIR.mkdir(parents=True, exist_ok=True)
     config = {
         "device_id": device_id,
         "ip": ip,
@@ -48,16 +60,14 @@ def save_device(
             "touchscreen": touchscreen,
         },
     }
-    (SAVED_DEVICES_DIR / f"{device_id}.json").write_text(
-        json.dumps(config, indent=2), encoding="utf-8"
-    )
+    _write_config(config)
 
 
 def load_device(path: Path) -> BaseDevice:
     config = json.loads(path.read_text(encoding="utf-8"))
     auth_type = config.get("auth_type", "digest")
     auth = _make_auth(auth_type, config["username"], config["password"])
-    http = HttpClient(base_url=f"https://{config['ip']}", verify=False, auth=auth)
+    http = HttpClient(base_url=f"https://{config['ip']}", auth=auth)
     cls = PolycomDevice if config["vendor"] == "Polycom" else YealinkDevice
     caps = config["capabilities"]
     return cls(
@@ -81,7 +91,7 @@ def list_saved_devices() -> list[Path]:
 
 def make_device(device_id: str) -> BaseDevice:
     """Load device from saved_configs by device_id."""
-    config_path = SAVED_DEVICES_DIR / f"{device_id}.json"
+    config_path = named_path(SAVED_DEVICES_DIR, device_id, ".json")
     if not config_path.exists():
         raise FileNotFoundError(
             f"No saved config for '{device_id}' in {SAVED_DEVICES_DIR}"
@@ -92,14 +102,13 @@ def make_device(device_id: str) -> BaseDevice:
 def load_config(device_id: str) -> dict:
     """Load a device config from saved_configs/<device_id>.json."""
     return json.loads(
-        (SAVED_DEVICES_DIR / f"{device_id}.json").read_text(encoding="utf-8")
+        named_path(SAVED_DEVICES_DIR, device_id, ".json").read_text(encoding="utf-8")
     )
 
 
 def save_config(config: dict) -> None:
     """Persist a device config dict back to its JSON file."""
-    path = SAVED_DEVICES_DIR / f"{config['device_id']}.json"
-    path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+    _write_config(config)
 
 
 def config_context(config: dict, alias: str) -> str:

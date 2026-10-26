@@ -2,17 +2,7 @@ contract: end_active_conference_call
 description: 'Hang up the active conference call and return to idle.
 
   '
-implementations: 
-  polye100:
-    steps:
-    - keypress: SOFTKEY2
-  polye350:
-    steps:
-    - keypress: SOFTKEY2
-  yealinkt85:
-    steps:
-    - keypress: SOFTKEY4
-    - keypress: SOFTKEY2
+implementations: {}
 parameters: []
 postcondition:
   state: home_screen

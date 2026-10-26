@@ -4,14 +4,12 @@ from io import BytesIO
 from pathlib import Path
 from typing import Optional
 
-import urllib3
 from PIL import Image
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 
 from auto_tester.devices.base import BaseDevice, DeviceCapabilities
 from auto_tester.net.http import HttpClient
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 LATEST_SCREENSHOT_NAME = "latest_screen.png"
 
